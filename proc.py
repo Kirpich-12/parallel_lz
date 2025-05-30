@@ -1,28 +1,26 @@
 import multiprocessing
+import random
 
+def func(counter, lock, array):
+    for i in range(150):
+        with lock:
+            counter.value += 1
+            array.append(counter.value)
 
-flag = 0
-array = []
-
-def count():
-        global flag  
-        global array 
-        print(array)
-        flag += 1  
-        array.append(flag)
-        
-
-def gl_mass(n):
-     for i in range(n):
-        count()
-        
 
 def main():
-        ns = [100, 1000, 123, 213, 234, 653, 352, 234, 542, 122]
-        with multiprocessing.Pool(processes=10) as pool:
-                results = pool.map(gl_mass, ns)
-        print(array)
+    counter = multiprocessing.Value('i', 0)
+    lock = multiprocessing.Lock()
+    manager = multiprocessing.Manager()
+    array = manager.list()
+    processes = [multiprocessing.Process(target=func, args=(counter, lock, array)) for i in range(10)]
+    
+    for p in processes:
+        p.start()
+    for p in processes:
+        p.join()
+    print(array)
+
 
 if __name__ == '__main__':
-      main()
-
+    main()
