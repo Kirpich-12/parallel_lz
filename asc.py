@@ -1,7 +1,7 @@
 import asyncio
 
 async def func():
-    await asyncio.sleep(2) 
+    await asyncio.sleep(5) 
     return 'Функция завершена'
 
 async def main():
